@@ -147,14 +147,82 @@ function CraneContainer() {
   );
 }
 
-const projects = [
+interface Project {
+  number: string;
+  title: string;
+  type: string;
+  year: string;
+  className: string;
+  label: string;
+  liveUrl?: string;
+}
+
+function LiveProjectPreview({
+  url,
+  title,
+  fallbackLabel,
+}: {
+  url: string;
+  title: string;
+  fallbackLabel: string;
+}) {
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({ width: 1440, height: 720 });
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const el = frameRef.current;
+    if (!el) return;
+
+    const updateSize = () => {
+      if (el.clientWidth > 0 && el.clientHeight > 0) {
+        setSize({ width: el.clientWidth, height: el.clientHeight });
+      }
+    };
+
+    updateSize();
+    const observer = new ResizeObserver(updateSize);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const virtualWidth = size.width < 640 ? 1100 : 1440;
+  const scale = size.width / virtualWidth;
+  const virtualHeight = Math.max(1, Math.round(size.height / scale));
+
+  return (
+    <div ref={frameRef} className="project-art project-art-live">
+      <div className="live-fallback" aria-hidden="true">
+        <div className="art-grid" />
+        <div className="art-orb" />
+        <span>{fallbackLabel}</span>
+      </div>
+      <iframe
+        src={url}
+        title={`${title} live website hero`}
+        loading="eager"
+        scrolling="no"
+        onLoad={() => setLoaded(true)}
+        className={`live-preview-iframe ${loaded ? "is-loaded" : ""}`}
+        style={{
+          width: `${virtualWidth}px`,
+          height: `${virtualHeight}px`,
+          transform: `scale(${scale})`,
+        }}
+      />
+    </div>
+  );
+}
+
+const projects: Project[] = [
   {
     number: "01",
-    title: "Aether House",
-    type: "Hospitality / Digital",
+    title: "Prestige Solar",
+    type: "Energy / Digital",
     year: "2025",
-    className: "project-aether",
-    label: "AETHER",
+    className: "project-prestige",
+    label: "PRESTIGE SOLAR",
+    liveUrl: "https://prestige-solar-energy-and-electrical-limited.ai.studio",
   },
   {
     number: "02",
@@ -222,8 +290,10 @@ export default function App() {
       });
 
       gsap.utils.toArray<HTMLElement>(".project-visual").forEach((visual) => {
+        const art = visual.querySelector(".project-art");
+        if (!art || art.classList.contains("project-art-live")) return;
         gsap.fromTo(
-          visual.querySelector(".project-art"),
+          art,
           { scale: 1.1, yPercent: -4 },
           {
             scale: 1,
@@ -251,10 +321,9 @@ export default function App() {
       });
 
       gsap.to(heroObject.current, {
-        rotateZ: 22,
-        y: 180,
-        scale: 0.78,
-        opacity: 0.25,
+        rotateZ: 18,
+        y: 70,
+        scale: 0.86,
         ease: "none",
         scrollTrigger: {
           trigger: ".hero",
@@ -441,19 +510,50 @@ export default function App() {
           <div className="project-list">
             {projects.map((project) => (
               <article className="project-card" key={project.title} data-reveal>
-                <div className={`project-visual ${project.className}`}>
-                  <div className="project-art">
-                    <div className="art-grid" />
-                    <div className="art-orb" />
-                    <span>{project.label}</span>
+                {project.liveUrl ? (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`project-visual ${project.className}`}
+                    aria-label={`Open ${project.title} live website`}
+                  >
+                    <LiveProjectPreview
+                      url={project.liveUrl}
+                      title={project.title}
+                      fallbackLabel={project.label}
+                    />
+                    <span className="project-live-badge">
+                      <span className="live-dot" />
+                      Live preview · Open site
+                    </span>
+                    <div className="project-arrow">
+                      <ArrowUpRight />
+                    </div>
+                  </a>
+                ) : (
+                  <div className={`project-visual ${project.className}`}>
+                    <div className="project-art">
+                      <div className="art-grid" />
+                      <div className="art-orb" />
+                      <span>{project.label}</span>
+                    </div>
+                    <div className="project-arrow">
+                      <ArrowUpRight />
+                    </div>
                   </div>
-                  <div className="project-arrow">
-                    <ArrowUpRight />
-                  </div>
-                </div>
+                )}
                 <div className="project-info">
                   <span>{project.number}</span>
-                  <h3>{project.title}</h3>
+                  <h3>
+                    {project.liveUrl ? (
+                      <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                        {project.title}
+                      </a>
+                    ) : (
+                      project.title
+                    )}
+                  </h3>
                   <p>{project.type}</p>
                   <span>{project.year}</span>
                 </div>
