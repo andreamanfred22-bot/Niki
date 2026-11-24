@@ -1,0 +1,6 @@
+{
+  "name": "Bluesky Webstudio",
+  "description": "Independent creative studio crafting bold digital experiences, identity, web design, development, and motion.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
