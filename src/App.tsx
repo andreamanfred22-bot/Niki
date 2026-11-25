@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowDown, ArrowUpRight, Asterisk, Menu, MoveRight, X } from "lucide-react";
+import { ArrowDown, ArrowUpRight, ChevronLeft, ChevronRight, Menu, MoveRight, X } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -7,6 +7,107 @@ gsap.registerPlugin(ScrollTrigger);
 
 const LOGO_SRC = "/assets/aistudio/New_Project_19eca198.png";
 const CRANE_SRC = "/assets/aistudio/a60162bd-0d2d-4455-a334-954954f34d41_a75e5be5.png";
+const FOUNDER_PHOTO_SRC = "/assets/aistudio/1795614610685_99f03faf.png";
+
+function GeminiStar({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={`gemini-star ${className}`}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path d="M12 1C12 7.5 16.5 12 23 12C16.5 12 12 16.5 12 23C12 16.5 7.5 12 1 12C7.5 12 12 7.5 12 1Z" />
+    </svg>
+  );
+}
+
+interface PortfolioSlide {
+  id: string;
+  src: string;
+  alt: string;
+}
+
+const PORTFOLIO_SLIDES: PortfolioSlide[] = [
+  {
+    id: "founder-1",
+    src: FOUNDER_PHOTO_SRC,
+    alt: "Efuukikata Efet — Bluesky Admin",
+  },
+];
+
+function PortfolioCarousel() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const safeIndex = Math.min(activeIndex, Math.max(0, PORTFOLIO_SLIDES.length - 1));
+
+  const goPrev = () => {
+    setActiveIndex((prev) => (prev - 1 + PORTFOLIO_SLIDES.length) % PORTFOLIO_SLIDES.length);
+  };
+
+  const goNext = () => {
+    setActiveIndex((prev) => (prev + 1) % PORTFOLIO_SLIDES.length);
+  };
+
+  return (
+    <div className="portfolio-card">
+      <div className="carousel-frame">
+        <div
+          className="carousel-track"
+          style={{ transform: `translate3d(-${safeIndex * 100}%, 0, 0)` }}
+        >
+          {PORTFOLIO_SLIDES.map((slide) => (
+            <div className="carousel-slide" key={slide.id}>
+              <img src={slide.src} alt={slide.alt} />
+            </div>
+          ))}
+        </div>
+
+        {PORTFOLIO_SLIDES.length > 1 && (
+          <>
+            <button
+              type="button"
+              className="carousel-nav carousel-nav-prev"
+              onClick={goPrev}
+              aria-label="Previous picture"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              type="button"
+              className="carousel-nav carousel-nav-next"
+              onClick={goNext}
+              aria-label="Next picture"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </>
+        )}
+
+        {PORTFOLIO_SLIDES.length > 1 && (
+          <div className="carousel-dots" role="tablist" aria-label="Portfolio photos">
+            {PORTFOLIO_SLIDES.map((slide, index) => (
+              <button
+                key={slide.id}
+                type="button"
+                role="tab"
+                aria-selected={index === safeIndex}
+                aria-label={`View photo ${index + 1}`}
+                className={`carousel-dot ${index === safeIndex ? "is-active" : ""}`}
+                onClick={() => setActiveIndex(index)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="portfolio-identity">
+        <h3>Efuukikata Efet</h3>
+        <p>Bluesky Admin</p>
+      </div>
+    </div>
+  );
+}
 
 function CraneContainer() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -309,11 +410,26 @@ export default function App() {
         );
       });
 
-      gsap.to(".marquee-track", {
+      gsap.fromTo(
+        ".marquee-blue .marquee-track-reverse",
+        { xPercent: -50 },
+        {
+          xPercent: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".marquee-blue",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+          },
+        },
+      );
+
+      gsap.to(".marquee-acid .marquee-track", {
         xPercent: -50,
         ease: "none",
         scrollTrigger: {
-          trigger: ".marquee",
+          trigger: ".marquee-acid",
           start: "top bottom",
           end: "bottom top",
           scrub: 1,
@@ -473,34 +589,53 @@ export default function App() {
               <ArrowDown size={21} />
             </a>
           </div>
-          <span className="hero-index hero-fade">© 2025 / 001</span>
         </section>
+
+        <div className="marquee marquee-blue" aria-hidden="true">
+          <div className="marquee-track marquee-track-reverse">
+            {[0, 1].map((group) => (
+              <div className="marquee-group" key={group}>
+                <GeminiStar />
+                <span>WE BUILD WEBSITES THAT MAKES BRANDS STAND OUT</span>
+                <GeminiStar />
+                <span>WE BUILD WEBSITES THAT MAKES BRANDS STAND OUT</span>
+              </div>
+            ))}
+          </div>
+        </div>
 
         <section className="intro" id="studio">
           <div className="section-kicker" data-reveal>
-            <span>01</span> The studio
+            The studio
           </div>
-          <p className="statement" data-reveal>
-            We pair sharp strategy with <em>expressive design</em> to build digital places people
-            want to stay.
-          </p>
-          <div className="intro-meta" data-reveal>
-            <p>
-              Small by design.
-              <br />
-              Big on impact.
-            </p>
-            <p>
-              Working at the intersection of brand, technology, and motion, we turn good ideas into
-              unforgettable digital experiences.
-            </p>
+          <div className="intro-layout">
+            <div className="intro-media" data-reveal>
+              <PortfolioCarousel />
+            </div>
+            <div className="intro-content">
+              <p className="statement" data-reveal>
+                We pair sharp strategy with <em>expressive design</em> to build digital places people
+                want to stay.
+              </p>
+              <div className="intro-meta" data-reveal>
+                <p>
+                  Small by design.
+                  <br />
+                  Big on impact.
+                </p>
+                <p>
+                  Working at the intersection of brand, technology, and motion, we turn good ideas
+                  into unforgettable digital experiences.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
         <section className="work" id="work">
           <div className="section-heading" data-reveal>
             <div className="section-kicker">
-              <span>02</span> Selected work
+              Selected work
             </div>
             <h2>
               Projects with
@@ -543,35 +678,21 @@ export default function App() {
                     </div>
                   </div>
                 )}
-                <div className="project-info">
-                  <span>{project.number}</span>
-                  <h3>
-                    {project.liveUrl ? (
-                      <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                        {project.title}
-                      </a>
-                    ) : (
-                      project.title
-                    )}
-                  </h3>
-                  <p>{project.type}</p>
-                  <span>{project.year}</span>
-                </div>
               </article>
             ))}
           </div>
         </section>
 
-        <div className="marquee" aria-hidden="true">
+        <div className="marquee marquee-acid" aria-hidden="true">
           <div className="marquee-track">
             {[0, 1].map((group) => (
               <div className="marquee-group" key={group}>
-                <span>DESIGN</span>
-                <Asterisk />
-                <span>DEVELOP</span>
-                <Asterisk />
-                <span>DISRUPT</span>
-                <Asterisk />
+                <span>WEB DESIGN</span>
+                <GeminiStar />
+                <span>DEVELOPMENT</span>
+                <GeminiStar />
+                <span>UI/UX</span>
+                <GeminiStar />
               </div>
             ))}
           </div>
@@ -580,7 +701,7 @@ export default function App() {
         <section className="services" id="services">
           <div className="services-top" data-reveal>
             <div className="section-kicker">
-              <span>03</span> Capabilities
+              Capabilities
             </div>
             <h2>
               From first thought
@@ -591,7 +712,6 @@ export default function App() {
           <div className="service-list">
             {services.map(([number, title, description]) => (
               <div className="service-row" key={number} data-reveal>
-                <span>{number}</span>
                 <h3>{title}</h3>
                 <p>{description}</p>
                 <ArrowUpRight />
@@ -604,7 +724,7 @@ export default function App() {
           <div className="contact-main">
             <div className="contact-copy">
               <div className="section-kicker" data-reveal>
-                <span>04</span> Let’s make something matter
+                Let’s make something matter
               </div>
               <h2 data-reveal>
                 HAVE AN IDEA?
@@ -639,7 +759,7 @@ export default function App() {
               <a href="#behance">Behance</a>
               <a href="#linkedin">LinkedIn</a>
             </div>
-            <span>© 2025 BLUESKY WEBSTUDIO</span>
+            <span>BLUESKY WEBSTUDIO</span>
           </footer>
         </section>
       </main>
