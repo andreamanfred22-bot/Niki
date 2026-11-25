@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@400;500;600&family=Syne:wght@500;600;700;800&display=swap");
-@import "tailwindcss";
 
 :root {
   --ink: #101114;
@@ -9,31 +8,45 @@
   --line: rgba(16, 17, 20, 0.18);
 }
 
-@layer base {
-  html {
-    scroll-behavior: smooth;
-  }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: "Manrope", sans-serif;
-    overflow-x: hidden;
-  }
+html {
+  scroll-behavior: smooth;
+}
 
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Manrope", sans-serif;
+  overflow-x: hidden;
+}
 
-  button {
-    cursor: pointer;
-  }
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
 
-  ::selection {
-    background: var(--blue);
-    color: white;
-  }
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--blue);
+  color: white;
 }
 
 .site-shell {
@@ -247,14 +260,6 @@
   border-color: var(--blue);
   transform: rotate(-45deg);
 }
-.hero-index {
-  position: absolute;
-  right: 3vw;
-  top: 125px;
-  font:
-    10px "DM Mono",
-    monospace;
-}
 
 .intro,
 .work,
@@ -320,66 +325,6 @@
   height: 100%;
   object-fit: cover;
   object-position: top center;
-}
-
-.carousel-top-bar {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  right: 14px;
-  z-index: 4;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.carousel-counter {
-  padding: 6px 10px;
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #ffffff;
-  font:
-    10px "DM Mono",
-    monospace;
-  letter-spacing: 0.1em;
-}
-
-.carousel-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.carousel-add-btn,
-.carousel-action-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 11px;
-  background: rgba(16, 17, 20, 0.82);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  color: #ffffff;
-  font:
-    10px "DM Mono",
-    monospace;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transition:
-    background 0.25s ease,
-    border-color 0.25s ease;
-}
-
-.carousel-action-btn {
-  padding: 6px 8px;
-}
-
-.carousel-add-btn:hover,
-.carousel-action-btn:hover {
-  background: var(--blue);
-  border-color: var(--blue);
 }
 
 .carousel-nav {
@@ -543,6 +488,7 @@
 }
 .project-visual {
   position: relative;
+  display: block;
   height: min(67vw, 720px);
   overflow: hidden;
   cursor: pointer;
@@ -581,32 +527,6 @@
 }
 .project-visual:hover .project-arrow {
   transform: rotate(45deg) scale(1.1);
-}
-.project-info {
-  display: grid;
-  grid-template-columns: 5% 1fr 1fr auto;
-  gap: 20px;
-  align-items: baseline;
-  padding-top: 20px;
-  font:
-    10px "DM Mono",
-    monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.project-info h3 {
-  font:
-    500 clamp(1.5rem, 2.4vw, 2.5rem) "Syne",
-    sans-serif;
-  text-transform: none;
-  letter-spacing: -0.03em;
-}
-.project-info p {
-  opacity: 0.55;
-}
-
-.project-visual {
-  display: block;
 }
 .project-art-live {
   inset: 0;
@@ -682,9 +602,6 @@
   border-radius: 50%;
   background: var(--acid);
   box-shadow: 0 0 0 4px rgba(189, 255, 51, 0.22);
-}
-.project-info h3 a:hover {
-  color: var(--acid);
 }
 .project-sora .project-art {
   color: white;
@@ -994,12 +911,6 @@
     letter-spacing: 0.08em;
     line-height: 1.4;
   }
-  .hero-index {
-    position: static;
-    align-self: flex-start;
-    font-size: 9px;
-    opacity: 0.55;
-  }
   .hero-object-wrap {
     position: relative;
     top: auto;
@@ -1107,12 +1018,6 @@
     right: 14px;
     top: 14px;
     width: 44px;
-  }
-  .project-info {
-    grid-template-columns: auto 1fr auto;
-  }
-  .project-info p {
-    display: none;
   }
   .service-row {
     grid-template-columns: 1fr auto;
